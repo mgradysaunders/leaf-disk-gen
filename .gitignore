@@ -1,0 +1,3 @@
+bin/
+.rake_tasks~
+*.swp
