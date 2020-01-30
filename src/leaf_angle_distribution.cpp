@@ -26,14 +26,214 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /*+-+*/
+#include <sstream>
 #include <leaf-disk-gen/leaf_angle_distribution.hpp>
 
 namespace ld {
 
 // Sample normal direction.
-Vec3<Float> IsotropicLeafAngleDistribution::sampleNormal(Pcg32& pcg) const
+Vec3<Float> UniformLeafAngleDistribution::sampleNormal(Pcg32& pcg) const
 {
     return Vec3<Float>::uniform_hemisphere_pdf_sample(generateCanonical2(pcg));
+}
+
+// CDF initializer.
+void IsotropicLidfLeafAngleDistribution::lidfInit(int n)
+{
+    assert(n > 2);
+    lidf_.resize(n);
+    for (int k = 1; k < n - 1; k++) {
+        lidf_[k] = lidf(k / Float(n - 1) * 
+                        pr::numeric_constants<Float>::M_pi_2());
+    }
+    // Always 0 and 1.
+    lidf_[0] = 0;
+    lidf_[n - 1] = 1;
+}
+
+// Sample normal.
+Vec3<Float> IsotropicLidfLeafAngleDistribution::sampleNormal(Pcg32& pcg) const
+{
+    // Generate random numbers.
+    Float u0 = generateCanonical(pcg);
+    Float u1 = generateCanonical(pcg);
+
+    // Sample zenith.
+    Float theta = 0;
+    Float sin_theta = 0;
+    Float cos_theta = 1;
+    {
+        auto itr = 
+        std::lower_bound(
+                lidf_.begin(),
+                lidf_.end(),
+                u0);
+        if (itr == lidf_.begin() || 
+            itr == lidf_.end()) {
+            theta = itr == lidf_.begin() ? 0 : 
+                    pr::numeric_constants<Float>::M_pi_2();
+        }
+        else {
+            --itr;
+            std::ptrdiff_t k0 = std::distance(lidf_.begin(), itr);
+            std::ptrdiff_t k1 = k0 + 1;
+            assert(k0 >= 0 && k0 < std::ptrdiff_t(lidf_.size()));
+            assert(k1 >= 0 && k1 < std::ptrdiff_t(lidf_.size()));
+            Float lidf0 = lidf_[k0];
+            Float lidf1 = lidf_[k1];
+            Float fac = (u0 - lidf0) / (lidf1 - lidf0);
+            theta = ((1 - fac) * k0 + fac * k1) /
+                    (lidf_.size() - 1) * 
+                    pr::numeric_constants<Float>::M_pi_2();
+        }
+        sin_theta = pr::sin(theta);
+        cos_theta = pr::cos(theta);
+    }
+
+    // Sample azimumth.
+    Float phi = 2 * pr::numeric_constants<Float>::M_pi() * u1;
+    Float cos_phi = pr::cos(phi);
+    Float sin_phi = pr::sin(phi);
+
+    // Construct direction.
+    return {
+        sin_theta * cos_phi,
+        sin_theta * sin_phi,
+        cos_theta
+    };
+}
+
+// LIDF.
+Float TrigonometricLeafAngleDistribution::lidf(Float theta) const
+{
+    switch (type_) {
+        default:
+        case eTypePlanophile:
+            return (theta + pr::sin(2 * theta) / 2) / 
+                            pr::numeric_constants<Float>::M_pi_2();
+
+        case eTypeErectophile:
+            return (theta - pr::sin(2 * theta) / 2) /
+                            pr::numeric_constants<Float>::M_pi_2();
+
+        case eTypePlagiophile:
+            return (theta - pr::sin(4 * theta) / 4) /
+                            pr::numeric_constants<Float>::M_pi_2();
+
+        case eTypeExtremophile:
+            return (theta + pr::sin(4 * theta) / 4) / 
+                            pr::numeric_constants<Float>::M_pi_2();
+
+        case eTypeSpherical:
+            return 1 - pr::cos(theta);
+    }
+
+    // Unreachable.
+    return 0;
+}
+
+// LIDF.
+Float VerhoefBimodalLeafAngleDistribution::lidf(Float theta) const
+{
+    double a = double(a_);
+    double b = double(b_);
+    double x = double(2 * theta);
+    double y = 0;
+    while (1) {
+        y = a * pr::sin(x) + b * (pr::sin(2 * x) / 2);
+        double dx = (y - x + 2 * theta) / 2;
+        if (pr::fabs(dx) < 1e-6) {
+            break;
+        }
+        x += dx;
+    }
+    return Float(y + theta) / 
+                pr::numeric_constants<Float>::M_pi_2();
+}
+
+// From string.
+LeafAngleDistribution* 
+LeafAngleDistribution::fromString(const std::string& args)
+{
+    std::stringstream ss(args);
+    std::string name;
+    ss >> name;
+    if (name == "Uniform") {
+        return new UniformLeafAngleDistribution();
+    }
+    else
+    if (name == "Trigonometric") {
+        std::string type;
+        ss >> type;
+        if (type == "Planophile") {
+            return new TrigonometricLeafAngleDistribution(
+                       TrigonometricLeafAngleDistribution::eTypePlanophile);
+        }
+        else
+        if (type == "Erectophile") {
+            return new TrigonometricLeafAngleDistribution(
+                       TrigonometricLeafAngleDistribution::eTypeErectophile);
+        }
+        else
+        if (type == "Plagiophile") {
+            return new TrigonometricLeafAngleDistribution(
+                       TrigonometricLeafAngleDistribution::eTypePlagiophile);
+        }
+        else
+        if (type == "Extremophile") {
+            return new TrigonometricLeafAngleDistribution(
+                       TrigonometricLeafAngleDistribution::eTypeExtremophile);
+        }
+        else
+        if (type == "Spherical") {
+            return new TrigonometricLeafAngleDistribution(
+                       TrigonometricLeafAngleDistribution::eTypeSpherical);
+        }
+        else {
+            // Error.
+            throw 
+                std::runtime_error(
+                std::string(__PRETTY_FUNCTION__)
+                    .append(
+                    ": format is 'Trigonometric TYPE' where "
+                    "TYPE is 'Planophile', 'Erectophile', 'Plagiophile', "
+                    "'Extremophile', or 'Spherical'"));
+        }
+    }
+    else
+    if (name == "VerhoefBimodal") {
+        Float a;
+        Float b;
+        try {
+            std::string sa;
+            std::string sb;
+            ss >> sa;
+            ss >> sb;
+            a = std::stod(sa);
+            b = std::stod(sb);
+            if (!(pr::fabs(a) + pr::fabs(b) <= 1)) {
+                throw std::exception();
+            }
+        }
+        catch (const std::exception&) {
+            // Error.
+            throw
+                std::runtime_error(
+                std::string(__PRETTY_FUNCTION__)
+                    .append(
+                    ": format is 'VerhoefBimodal A B' where A and B "
+                    "are floating point numbers satsifying |A| + |B| <= 1"));
+        }
+        return new VerhoefBimodalLeafAngleDistribution(a, b);
+    }
+    else {
+        // Error.
+        throw 
+            std::runtime_error(
+            std::string(__PRETTY_FUNCTION__)
+                .append(": unknown name \"").append(name).append("\"")); 
+    }
+    return nullptr;
 }
 
 } // namespace ld

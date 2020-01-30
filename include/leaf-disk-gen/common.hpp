@@ -30,6 +30,7 @@
 #ifndef LEAF_DISK_GEN_COMMON_HPP
 #define LEAF_DISK_GEN_COMMON_HPP
 
+#include <cassert>
 #include <iostream>
 #include <preform/multi.hpp>
 #include <preform/multi_math.hpp>

@@ -57,12 +57,16 @@ public:
      * @brief Sample normal direction.
      */
     virtual Vec3<Float> sampleNormal(Pcg32& pcg) const = 0;
+
+public:
+
+    static LeafAngleDistribution* fromString(const std::string& args);
 };
 
 /**
- * @brief Isotropic leaf angle distribution.
+ * @brief Uniform leaf angle distribution.
  */
-class IsotropicLeafAngleDistribution final : public LeafAngleDistribution
+class UniformLeafAngleDistribution final : public LeafAngleDistribution
 {
 public:
 
@@ -70,6 +74,163 @@ public:
      * @copydoc LeafAngleDistribution::sampleNormal()
      */
     Vec3<Float> sampleNormal(Pcg32& pcg) const;
+};
+
+/**
+ * @brief Isotropic LIDF leaf angle distribution.
+ */
+class IsotropicLidfLeafAngleDistribution : public LeafAngleDistribution
+{
+public:
+
+    /**
+     * @copydoc LeafAngleDistribution::sampleNormal()
+     */
+    Vec3<Float> sampleNormal(Pcg32& pcg) const final;
+
+protected:
+
+    /**
+     * @brief Leaf inclination distribution function initializer.
+     */
+    void lidfInit(int n = 256);
+
+    /**
+     * @brief Leaf inclination distribution function. 
+     */
+    virtual Float lidf(Float theta) const = 0;
+
+private:
+
+    /**
+     * @brief Leaf inclination distribution function values.
+     */
+    std::vector<Float> lidf_;
+};
+
+/**
+ * @brief Trigonometric leaf angle distribution.
+ */
+class TrigonometricLeafAngleDistribution final : 
+                        public IsotropicLidfLeafAngleDistribution
+{
+public:
+
+    /**
+     * @brief Type.
+     */
+    enum Type {
+
+        /**
+         * @brief Planophile.
+         */
+        eTypePlanophile,
+
+        /**
+         * @brief Erectophile.
+         */
+        eTypeErectophile,
+
+        /**
+         * @brief Plagiophile.
+         */
+        eTypePlagiophile,
+
+        /**
+         * @brief Extremophile.
+         */
+        eTypeExtremophile,
+
+        /**
+         * @brief Spherical.
+         */
+        eTypeSpherical
+    };
+
+    /**
+     * @brief Constructor.
+     */
+    explicit
+    TrigonometricLeafAngleDistribution(Type type) : type_(type)
+    {
+        // Delegate.
+        this->lidfInit(256);
+    }
+
+protected:
+    
+    /**
+     * @copydoc IsotropicLidfLeafAngleDistribution::lidf()
+     *
+     * @par Expression
+     * - Planophile:
+     * @f[
+     *      F(\theta) = 
+     *      \frac{2}{\pi}\left[\theta + \frac{1}{2}\sin{2\theta}\right] 
+     * @f]
+     * - Erectophile:
+     * @f[
+     *      F(\theta) = 
+     *      \frac{2}{\pi}\left[\theta - \frac{1}{2}\sin{2\theta}\right] 
+     * @f]
+     * - Plagiophile:
+     * @f[
+     *      F(\theta) = 
+     *      \frac{2}{\pi}\left[\theta - \frac{1}{4}\sin{4\theta}\right] 
+     * @f]
+     * - Extremophile:
+     * @f[
+     *      F(\theta) = 
+     *      \frac{2}{\pi}\left[\theta + \frac{1}{4}\sin{4\theta}\right] 
+     * @f]
+     * - Spherical:
+     * @f[
+     *      F(\theta) = 1 - \cos{\theta}
+     * @f]
+     */
+    Float lidf(Float theta) const;
+
+private:
+
+    /**
+     * @brief Type.
+     */
+    Type type_ = eTypePlanophile;
+};
+
+/**
+ * @brief Verhoef bimodal leaf angle distribution.
+ */
+class VerhoefBimodalLeafAngleDistribution final :
+                        public IsotropicLidfLeafAngleDistribution
+{
+public:
+
+    /**
+     * @brief Constructor.
+     */
+    explicit
+    VerhoefBimodalLeafAngleDistribution(Float a, Float b) : a_(a), b_(b)
+    {
+        this->lidfInit(256);
+    }
+
+    /**
+     * @copydoc IsotropicLidfLeafAngleDistribution::lidf()
+     */
+    Float lidf(Float theta) const;
+
+private:
+
+    /**
+     * @brief Coefficient @f$ a @f$, controlling average slope.
+     */
+    Float a_ = 0;
+
+    /**
+     * @brief Coefficient @f$ b @f$, controlling bimodality.
+     */
+    Float b_ = 0;
 };
 
 /**@}*/

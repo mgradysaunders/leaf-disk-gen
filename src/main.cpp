@@ -38,13 +38,13 @@ int main(int argc, char** argv)
 {
     using namespace ld;
 
-    pr::option_parser opt_parser("[OPTIONS]");
+    pr::option_parser opt_parser("desc [OPTIONS] [<box> [OPTIONS]]...");
 
     int seed = 0;
     Float lai = 1;
     Float radius = 0.1;
     std::string ofs_filename = "leaf.glist";
-    std::string angle_distribution_args = "Isotropic";
+    std::string angle_distribution_args = "Uniform";
 
     // -s/--seed
     opt_parser.on_option("-s", "--seed", 1,
@@ -167,8 +167,9 @@ int main(int argc, char** argv)
         // Seed.
         pcg = Pcg32(seed);
 
-        // TODO
-        angle_distribution = new IsotropicLeafAngleDistribution();
+        // Angle distribution.
+        angle_distribution = 
+            LeafAngleDistribution::fromString(angle_distribution_args);
     });
 
     // Box options.
