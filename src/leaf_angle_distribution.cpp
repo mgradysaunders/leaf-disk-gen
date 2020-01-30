@@ -27,6 +27,7 @@
  */
 /*+-+*/
 #include <sstream>
+#include <preform/misc_string.hpp>
 #include <leaf-disk-gen/leaf_angle_distribution.hpp>
 
 namespace ld {
@@ -158,34 +159,38 @@ LeafAngleDistribution::fromString(const std::string& args)
     std::stringstream ss(args);
     std::string name;
     ss >> name;
-    if (name == "Uniform") {
+
+    pr::ci_string ci_name = name.c_str();
+    if (ci_name == "Uniform") {
         return new UniformLeafAngleDistribution();
     }
     else
-    if (name == "Trigonometric") {
+    if (ci_name == "Trigonometric") {
         std::string type;
         ss >> type;
-        if (type == "Planophile") {
+
+        pr::ci_string ci_type = type.c_str();
+        if (ci_type == "Planophile") {
             return new TrigonometricLeafAngleDistribution(
                        TrigonometricLeafAngleDistribution::eTypePlanophile);
         }
         else
-        if (type == "Erectophile") {
+        if (ci_type == "Erectophile") {
             return new TrigonometricLeafAngleDistribution(
                        TrigonometricLeafAngleDistribution::eTypeErectophile);
         }
         else
-        if (type == "Plagiophile") {
+        if (ci_type == "Plagiophile") {
             return new TrigonometricLeafAngleDistribution(
                        TrigonometricLeafAngleDistribution::eTypePlagiophile);
         }
         else
-        if (type == "Extremophile") {
+        if (ci_type == "Extremophile") {
             return new TrigonometricLeafAngleDistribution(
                        TrigonometricLeafAngleDistribution::eTypeExtremophile);
         }
         else
-        if (type == "Spherical") {
+        if (ci_type == "Spherical") {
             return new TrigonometricLeafAngleDistribution(
                        TrigonometricLeafAngleDistribution::eTypeSpherical);
         }
@@ -201,7 +206,7 @@ LeafAngleDistribution::fromString(const std::string& args)
         }
     }
     else
-    if (name == "VerhoefBimodal") {
+    if (ci_name == "VerhoefBimodal") {
         Float a;
         Float b;
         try {
