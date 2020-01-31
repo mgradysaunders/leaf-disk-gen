@@ -38,7 +38,7 @@ int main(int argc, char** argv)
 {
     using namespace ld;
 
-    pr::option_parser opt_parser("desc [OPTIONS] [<box> [OPTIONS]]...");
+    pr::option_parser opt_parser("desc [OPTIONS] [<box> [BOX-OPTIONS]]...");
 
     int seed = 0;
     Float lai = 1;
@@ -122,7 +122,7 @@ int main(int argc, char** argv)
     });
 
     unsigned int obj_ver_offset = 0;
-    unsigned int obj_ver_res = 10;
+    unsigned int obj_ver_res = 6;
     bool is_glist = true;
     std::ofstream ofs;
     Pcg32 pcg;
