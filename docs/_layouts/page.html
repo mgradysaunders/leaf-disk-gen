@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html lang="en" class="ie8"><![endif]-->
+<!--[if IE 9]><html lang="en" class="ie9"><![endif]-->
+<!--[if !IE]><!--><html lang="en"><!--<![endif]-->
+{% include head.html %}
+<body>
+    <div class="page-frame">
+        <div class="page">
+            <div class="page-head">
+                <div class="page-head-1">
+                    <h1>{{ page.title }}</h1>
+                </div>
+                <div class="page-head-2">
+                    <p><i>{{ page.subtitle }}</i></p>
+                </div>
+            </div>
+            <div class="page-body">
+            {{ content }}
+            {% include return.html %}
+            </div>
+        </div><!--//body-content-->
+        {% include copy.html %}
+    </div><!--//body-frame-->
+</body>
+</html>
