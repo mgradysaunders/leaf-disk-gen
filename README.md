@@ -50,6 +50,8 @@ that `|A| + |B| <= 1`.
 The global options `[OPTIONS]` are as follows.
 - `-s/--seed` to specify the seed for the random number generator. By 
 default, this is `0`.
+- `-m/--matid` to specify the material ID number to assign to the leaf 
+primitives. By default, this is `100`.
 - `-l/--lai` to specify Leaf Area Index (LAI) with respect to 
 &ldquo;ground&rdquo; in the XY plane. LAI is defined as _leaf area
 per unit of ground area_. So, this indirectly controls the number of leaves

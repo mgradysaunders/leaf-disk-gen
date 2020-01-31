@@ -41,6 +41,7 @@ int main(int argc, char** argv)
     pr::option_parser opt_parser("desc [OPTIONS] [<box> [BOX-OPTIONS]]...");
 
     int seed = 0;
+    int matid = 100;
     Float lai = 1;
     Float radius = 0.1;
     std::string ofs_filename = "leaf.glist";
@@ -61,6 +62,22 @@ int main(int argc, char** argv)
         }
     })
     << "Specify seed. By default, 0.\n";
+
+    // -m/--matid
+    opt_parser.on_option("-m", "--matid", 1,
+    [&](char** argv) {
+        try {
+            matid = std::stoi(argv[0]);
+        }
+        catch (const std::exception&) {
+            throw 
+                std::runtime_error(
+                std::string("-m/--matid expects 1 integer ")
+                    .append("(can't parse ").append(argv[0])
+                    .append(")"));
+        }
+    })
+    << "Specify material ID of leaf primitives. By default, 100.\n";
 
     // -l/--lai
     opt_parser.on_option("-l", "--lai", 1,
@@ -160,8 +177,14 @@ int main(int argc, char** argv)
                 "<geometrylist enabled=\"true\">\n"
                 "<object>\n"
                 "<basegeometry>\n"
-                "<disk><matid>100</matid></disk>\n"
+                "<disk><matid>";
+            ofs << matid;
+            ofs << 
+                "</matid></disk>\n"
                 "</basegeometry>\n";
+        }
+        else {
+            ofs << "usemtl " << matid << "\n";
         }
 
         // Seed.
