@@ -74,18 +74,19 @@ void LeafDisk::writeObj(
     ostr << pos[2] << '\n';
 
     // Clamp.
-    if (ver_res < 3) {
-        ver_res = 3;
+    if (ver_res < 4) {
+        ver_res = 4;
     }
+
+    Float dphi = 2 * pr::numeric_constants<Float>::M_pi() / ver_res;
+    Float area_fac = pr::sqrt(dphi / pr::sin(dphi)); // Preserve area.
 
     // Write vertices.
     for (unsigned int j = 0; j < ver_res; j++) {
-        Float phi = 
-            j / Float(ver_res) * 
-            2 * pr::numeric_constants<Float>::M_pi();
+        Float phi = j * dphi;
         Vec3<Float> ver = 
-            (radius * pr::cos(phi)) * hatu + 
-            (radius * pr::sin(phi)) * hatv + pos;
+            (area_fac * radius * pr::cos(phi)) * hatu + 
+            (area_fac * radius * pr::sin(phi)) * hatv + pos;
         ostr << "v ";
         ostr << ver[0] << ' ';
         ostr << ver[1] << ' ';

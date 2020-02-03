@@ -32,10 +32,10 @@ subcommands with `[BOX-OPTIONS]` options specifies axis-aligned bounding
 boxes in which to generate the leaf primitives.
 
 As mentioned, the `desc` string describes the leaf angle 
-distribution. There are currently three types of leaf angle distributions
+distribution. There are currently four types of leaf angle distributions
 implemented.
 1. _Uniform_, such that all leaf angles are equally likely. 
-This is specified simply by the description string `"Uniform"`.
+This is specified by the description string `"Uniform"`.
 2. _Trigonometric_, such that the Leaf Inclination Distribution Function
 (LIDF) is described by 1 of 5 different closed-form expressions. This
 is specified by the description string `"Trigonometric TYPE"` where `TYPE`
@@ -46,21 +46,33 @@ for each type.
 expressions via 2 real parameters. This is specified by the description 
 string `"VerhoefBimodal A B"` where `A` and `B` are real numbers such
 that `|A| + |B| <= 1`.
+4. _Microsurface_, such that the leaf angles follow one of the two
+standard microsurface normal distributions, _Trowbridge Reitz (GGX)_
+or _Beckmann_. This is specifed by the description string 
+`"NAME ALPHAX ALPHAY"` where `NAME` is either `TrowbridgeReitz` or 
+`Beckmann`, and `ALPHAX` and `ALPHAY` are positive floating point numbers
+corresponding to surface roughness in the X and Y directions. If these
+are equal, then the angle distribution is isotropic. Otherwise, the
+angle distribution is anisotropic.
 
 The global options `[OPTIONS]` are as follows.
-- `-s/--seed` to specify the seed for the random number generator. By 
-default, this is `0`.
+- `-s/--seed` to specify the seed for the random number generator. 
+By default, this is `0`.
 - `-m/--matid` to specify the material ID number to assign to the leaf 
 primitives. By default, this is `100`.
 - `-l/--lai` to specify Leaf Area Index (LAI) with respect to 
 &ldquo;ground&rdquo; in the XY plane. LAI is defined as _leaf area
-per unit of ground area_. So, this indirectly controls the number of leaves
-generated. By default, this is `1`.
+per unit of ground area_. So, this indirectly controls the number of 
+leaves generated. By default, this is `1`.
 - `-r/--radius` to specify the radius of leaf disks in meters. By default,
 this is `0.1`.
 - `-o/--output` to specify the output filename. This must end in
 either `.glist` or `.obj`, to designate the file as a DIRSIG GList or 
 Wavefront OBJ respectively. By default, this is `leaf.glist`.
+- `-ov/--output-ver-res` to specify the output vertex resolution. This is 
+the number of vertices generated on the perimeter of each triangulated disk. 
+_This only affects Wavefront OBJ output_, since DIRSIG GList output uses a
+true disk primitive. By default, this is `6`.
 - `-h/--help` to display program help, which includes brief 
 descriptions of all program options.
 

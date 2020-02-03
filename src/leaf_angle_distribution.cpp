@@ -152,6 +152,40 @@ Float VerhoefBimodalLeafAngleDistribution::lidf(Float theta) const
                 pr::numeric_constants<Float>::M_pi_2();
 }
 
+// Sample normal.
+Vec3<Float> TrowbridgeReitzLeafAngleDistribution::sampleNormal(
+            Pcg32& pcg) const
+{
+    Vec2<Float> u = generateCanonical2(pcg);
+    Vec2<Float> m = 
+        pr::sqrt(-1 - 1 / (4 * u * (u - 1))) * 
+        pr::copysign(Vec2<Float>{1, 1}, u - Float(0.5));
+    return 
+        pr::normalize_safe(
+        Vec3<Float>{
+            -alphax_ * m[0], 
+            -alphay_ * m[1], 
+            1
+        });
+}
+
+// Sample normal.
+Vec3<Float> BeckmannLeafAngleDistribution::sampleNormal(
+            Pcg32& pcg) const
+{
+    Vec2<Float> m = {
+        pr::normal_distribution<Float>(0, 1)(pcg),
+        pr::normal_distribution<Float>(0, 1)(pcg)
+    };
+    return 
+        pr::normalize_safe(
+        Vec3<Float>{
+            -alphax_ * m[0], 
+            -alphay_ * m[1], 
+            1
+        });
+}
+
 // From string.
 LeafAngleDistribution* 
 LeafAngleDistribution::fromString(const std::string& args)
@@ -230,6 +264,39 @@ LeafAngleDistribution::fromString(const std::string& args)
                     "are floating point numbers satsifying |A| + |B| <= 1"));
         }
         return new VerhoefBimodalLeafAngleDistribution(a, b);
+    }
+    else
+    if (ci_name == "TrowbridgeReitz" ||
+        ci_name == "Beckmann") {
+        Float alphax;
+        Float alphay;
+        try {
+            std::string salphax;
+            std::string salphay;
+            ss >> salphax;
+            ss >> salphay;
+            alphax = std::stod(salphax);
+            alphay = std::stod(salphay);
+            if (!(alphax > 0 && alphay > 0)) {
+                throw std::exception();
+            }
+        }
+        catch (const std::exception&) {
+            // Error.
+            throw
+                std::runtime_error(
+                std::string(__PRETTY_FUNCTION__)
+                    .append(": format is '").append(ci_name.c_str())
+                    .append(" ALPHAX ALPHAY' "
+                            "where ALPHAX and ALPHAY "
+                            "are positive floating point numbers"));
+        }
+        if (ci_name == "TrowbridgeReitz") {
+            return new TrowbridgeReitzLeafAngleDistribution(alphax, alphay);
+        }
+        else {
+            return new BeckmannLeafAngleDistribution(alphax, alphay);
+        }
     }
     else {
         // Error.

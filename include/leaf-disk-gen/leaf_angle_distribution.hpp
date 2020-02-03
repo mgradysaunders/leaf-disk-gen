@@ -60,6 +60,9 @@ public:
 
 public:
 
+    /**
+     * @brief Initialize from string.
+     */
     static LeafAngleDistribution* fromString(const std::string& args);
 };
 
@@ -158,7 +161,7 @@ public:
     }
 
 protected:
-    
+
     /**
      * @copydoc IsotropicLidfLeafAngleDistribution::lidf()
      *
@@ -232,6 +235,85 @@ private:
      */
     Float b_ = 0;
 };
+
+/**
+ * @brief Trowbridge-Reitz (GGX) leaf angle distribution.
+ */
+class TrowbridgeReitzLeafAngleDistribution : public LeafAngleDistribution
+{
+public:
+
+    /**
+     * @brief Default constructor.
+     */
+    TrowbridgeReitzLeafAngleDistribution() = default;
+    
+    /**
+     * @brief Constructor.
+     */
+    TrowbridgeReitzLeafAngleDistribution(Float alphax, Float alphay) :
+            alphax_(alphax),
+            alphay_(alphay)
+    {
+    }
+
+    /**
+     * @copydoc LeafAngleDistribution::sampleNormal()
+     */
+    Vec3<Float> sampleNormal(Pcg32& pcg) const;
+
+private:
+
+    /**
+     * @brief Roughness in X @f$ \alpha_x @f$.
+     */
+    Float alphax_ = 1;
+
+    /**
+     * @brief Roughness in Y @f$ \alpha_y @f$.
+     */
+    Float alphay_ = 1;
+};
+
+/**
+ * @brief Beckmann leaf angle distribution.
+ */
+class BeckmannLeafAngleDistribution : public LeafAngleDistribution
+{
+public:
+
+    /**
+     * @brief Default constructor.
+     */
+    BeckmannLeafAngleDistribution() = default;
+
+    /**
+     * @brief Constructor.
+     */
+    BeckmannLeafAngleDistribution(Float alphax, Float alphay) :
+            alphax_(alphax),
+            alphay_(alphay)
+    {
+    }
+
+    /**
+     * @copydoc LeafAngleDistribution::sampleNormal()
+     */
+    Vec3<Float> sampleNormal(Pcg32& pcg) const;
+
+private:
+
+    /**
+     * @brief Roughness in X @f$ \alpha_x @f$.
+     */
+    Float alphax_ = 1;
+
+    /**
+     * @brief Roughness in Y @f$ \alpha_y @f$.
+     */
+    Float alphay_ = 1;
+};
+
 
 /**@}*/
 

@@ -30,6 +30,7 @@
 #include <preform/aabb.hpp>
 #include <preform/misc_string.hpp>
 #include <preform/option_parser.hpp>
+#include <preform/medium.hpp>
 #include <leaf-disk-gen/common.hpp>
 #include <leaf-disk-gen/leaf_angle_distribution.hpp>
 #include <leaf-disk-gen/leaf_disk.hpp>
@@ -46,6 +47,10 @@ int main(int argc, char** argv)
     Float radius = 0.1;
     std::string ofs_filename = "leaf.glist";
     std::string angle_distribution_args = "Uniform";
+
+    unsigned int obj_ver_offset = 0;
+    unsigned int obj_ver_res = 6;
+    bool is_glist = true;
 
     // -s/--seed
     opt_parser.on_option("-s", "--seed", 1,
@@ -111,8 +116,7 @@ int main(int argc, char** argv)
             throw 
                 std::runtime_error(
                 std::string("-r/--radius expects 1 positive float ")
-                    .append("(can't parse ").append(argv[0])
-                    .append(")")); 
+                    .append("(can't parse ").append(argv[0]).append(")")); 
         }
     })
     << "Specify leaf radius in meters. By default, 0.1.\n";
@@ -123,6 +127,29 @@ int main(int argc, char** argv)
         ofs_filename = argv[0];
     })
     << "Specify output filename. By default, \"leaf.glist\".\n";
+
+    // -ov/--output-ver-res
+    opt_parser.on_option("-ov", "--output-ver-res", 1,
+    [&](char** argv) {
+        try {
+            obj_ver_res = std::stoi(argv[0]);
+            if (obj_ver_res < 4 || 
+                obj_ver_res > 32) {
+                throw std::exception();
+            }
+        }
+        catch (const std::exception&) {
+            throw
+                std::runtime_error(
+                std::string("-ov/--output-ver-res expects 1 integer in ")
+                    .append("[4, 32] (can't parse ").append(argv[0])
+                    .append(")"));
+        }
+    })
+    << "Specify output vertex resolution, being the number of vertices\n"
+       "generated on the perimeter of each disk. This only affects OBJ\n"
+       "output, since GList output has a proper disk primitive.\n"
+       "By default, 6.\n";
 
     // -h/--help
     opt_parser.on_option("-h", "--help", 0,
@@ -138,9 +165,6 @@ int main(int argc, char** argv)
         angle_distribution_args = argv;
     });
 
-    unsigned int obj_ver_offset = 0;
-    unsigned int obj_ver_res = 6;
-    bool is_glist = true;
     std::ofstream ofs;
     Pcg32 pcg;
     LeafAngleDistribution* angle_distribution = nullptr;

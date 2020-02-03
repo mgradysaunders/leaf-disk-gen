@@ -126,7 +126,9 @@ public:
      * the perimeter of the disk, which should be greater than or equal to 
      * three. Also note that the disk is tessellated as a triangle fan about
      * a vertex in the center, such that the implementation actually writes 
-     * `ver_res + 1` vertices.
+     * `ver_res + 1` vertices. Furthermore, each triangle is locally scaled 
+     * according to `ver_res` so that its area is equivalent to the area of 
+     * the sector it represents.
      */
     void writeObj(std::ostream& ostr, 
                   unsigned int& ver_offset, 
