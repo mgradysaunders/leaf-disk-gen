@@ -234,7 +234,7 @@ Public Attributes</h2></td></tr>
 </dl>
 <dl class="section note"><dt>Note</dt><dd>The <code>ver_offset</code> argument allows multiple disks to be written to the same file by keeping track of the number of vertices written so far. This should be zero initially, and should not be modified by the user between calls.</dd>
 <dd>
-The <code>ver_res</code> argument is the number of vertices to generate on the perimeter of the disk, which should be greater than or equal to three. Also note that the disk is tessellated as a triangle fan about a vertex in the center, such that the implementation actually writes <code>ver_res + 1</code> vertices. </dd></dl>
+The <code>ver_res</code> argument is the number of vertices to generate on the perimeter of the disk, which should be greater than or equal to three. Also note that the disk is tessellated as a triangle fan about a vertex in the center, such that the implementation actually writes <code>ver_res + 1</code> vertices. Furthermore, each triangle is locally scaled according to <code>ver_res</code> so that its area is equivalent to the area of the sector it represents. </dd></dl>
 
 </div>
 </div>

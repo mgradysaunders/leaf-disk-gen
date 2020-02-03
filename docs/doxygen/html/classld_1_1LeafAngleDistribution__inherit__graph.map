@@ -1,6 +1,8 @@
 <map id="ld::LeafAngleDistribution" name="ld::LeafAngleDistribution">
-<area shape="rect" id="node2" href="$classld_1_1IsotropicLidfLeafAngleDistribution.html" title="Isotropic LIDF leaf angle distribution. " alt="" coords="113,80,283,121"/>
-<area shape="rect" id="node5" href="$classld_1_1UniformLeafAngleDistribution.html" title="Uniform leaf angle distribution. " alt="" coords="307,87,518,114"/>
-<area shape="rect" id="node3" href="$classld_1_1TrigonometricLeafAngleDistribution.html" title="Trigonometric leaf angle distribution. " alt="" coords="5,169,183,211"/>
-<area shape="rect" id="node4" href="$classld_1_1VerhoefBimodalLeafAngleDistribution.html" title="Verhoef bimodal leaf angle distribution. " alt="" coords="207,169,397,211"/>
+<area shape="rect" id="node2" href="$classld_1_1BeckmannLeafAngleDistribution.html" title="Beckmann leaf angle distribution. " alt="" coords="217,5,444,32"/>
+<area shape="rect" id="node3" href="$classld_1_1IsotropicLidfLeafAngleDistribution.html" title="Isotropic LIDF leaf angle distribution. " alt="" coords="246,57,415,98"/>
+<area shape="rect" id="node6" href="$classld_1_1TrowbridgeReitzLeafAngleDistribution.html" title="Trowbridge&#45;Reitz (GGX) leaf angle distribution. " alt="" coords="234,122,427,163"/>
+<area shape="rect" id="node7" href="$classld_1_1UniformLeafAngleDistribution.html" title="Uniform leaf angle distribution. " alt="" coords="225,188,436,215"/>
+<area shape="rect" id="node4" href="$classld_1_1TrigonometricLeafAngleDistribution.html" title="Trigonometric leaf angle distribution. " alt="" coords="499,25,676,66"/>
+<area shape="rect" id="node5" href="$classld_1_1VerhoefBimodalLeafAngleDistribution.html" title="Verhoef bimodal leaf angle distribution. " alt="" coords="492,90,683,131"/>
 </map>
