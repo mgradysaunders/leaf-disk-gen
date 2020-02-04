@@ -300,5 +300,7 @@ int main(int argc, char** argv)
             "</geometrylist>\n";
     }
 
+    delete angle_distribution;
+
     return EXIT_SUCCESS;
 }
