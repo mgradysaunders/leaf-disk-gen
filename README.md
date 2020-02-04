@@ -66,7 +66,7 @@ primitives. By default, this is `100`.
 per unit of ground area_. So, this indirectly controls the number of 
 leaves generated. By default, this is `1`.
 - `-r/--radius` to specify the radius of leaf disks in meters. By default,
-this is `0.1`.
+this is `0.05`.
 - `-o/--output` to specify the output filename. This must end in
 either `.glist` or `.obj`, to designate the file as a DIRSIG GList or 
 Wavefront OBJ respectively. By default, this is `leaf.glist`.

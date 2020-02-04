@@ -45,7 +45,7 @@ int main(int argc, char** argv)
     int seed = 0;
     int matid = 100;
     Float lai = 1;
-    Float radius = 0.1;
+    Float radius = 0.05;
     std::string ofs_filename = "leaf.glist";
     std::string angle_distribution_args = "Uniform";
 
@@ -120,7 +120,7 @@ int main(int argc, char** argv)
                     .append("(can't parse ").append(argv[0]).append(")")); 
         }
     })
-    << "Specify leaf radius in meters. By default, 0.1.\n";
+    << "Specify leaf radius in meters. By default, 0.05.\n";
 
     // -o/--output
     opt_parser.on_option("-o", "--output", 1,
