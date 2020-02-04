@@ -24,12 +24,13 @@ of triangulated disks. This is useful for abstract canopy simulations, which
 focus on overall light transport phenomena (not photorealism).
 The general program usage is 
 ```
-$ ./bin/leaf-disk-gen desc [OPTIONS] [<box> [BOX-OPTIONS]]...
+$ ./bin/leaf-disk-gen desc [OPTIONS] [<box> [BOX-OPTIONS]|<sphere> [SPHERE-OPTIONS]]...
 ```
 where `desc` is a string describing the leaf angle distribution,
-`[OPTIONS]` specifies global program options, and the sequence of `box` 
-subcommands with `[BOX-OPTIONS]` options specifies axis-aligned bounding 
-boxes in which to generate the leaf primitives.
+`[OPTIONS]` specifies global program options, and the sequence of `box` or
+`sphere` subcommands with `[BOX-OPTIONS]` or `[SPHERE-OPTIONS]` options 
+specifies axis-aligned bounding boxes or spheres in which to generate 
+the leaf primitives.
 
 As mentioned, the `desc` string describes the leaf angle 
 distribution. There are currently four types of leaf angle distributions
@@ -82,6 +83,10 @@ Importantly, these options accept a string (surrounded by quotes) of an
 array (surrounded by square brackets, separated by commas) of three real 
 numbers. For example, `--from "[1, 2, 3]"` specifies the point X=1, Y=2, 
 Z=3, for the &ldquo;from&rdquo; corner.
+
+The sphere options `[SPHERE-OPTIONS]` also include only 2 options,
+`--center` and `--radius`, which specify the center coordinate and radius of
+the sphere respectively. 
 
 As a more complete example,
 ```

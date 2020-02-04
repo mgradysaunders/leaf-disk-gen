@@ -39,7 +39,8 @@ int main(int argc, char** argv)
 {
     using namespace ld;
 
-    pr::option_parser opt_parser("desc [OPTIONS] [<box> [BOX-OPTIONS]]...");
+    pr::option_parser opt_parser(
+        "desc [OPTIONS] [<box> [BOX-OPTIONS]|<sphere> [SPHERE-OPTIONS]]...");
 
     int seed = 0;
     int matid = 100;
@@ -270,6 +271,78 @@ int main(int argc, char** argv)
         for (int k = 0; k < num_leaves; k++) {
             LeafDisk leaf_disk;
             leaf_disk.pos = box.lerp(generateCanonical3(pcg));
+            leaf_disk.normal = angle_distribution->sampleNormal(pcg);
+            leaf_disk.radius = radius;
+            if (is_glist) {
+                leaf_disk.writeGListInstance(ofs);
+            }
+            else {
+                leaf_disk.writeObj(
+                        ofs, 
+                        obj_ver_offset, 
+                        obj_ver_res);
+            }
+        }
+    });
+
+    Vec3<Float> sphere_center = {0, 0, 0};
+    Float sphere_radius = 1;
+
+    // <sphere>
+    opt_parser.in_group("sphere") 
+    << "Sphere volume.\n";
+
+    // --center
+    opt_parser.on_option(nullptr, "--center", 1, 
+    [&](char** argv) {
+        std::stringstream sstr(argv[0]);
+        sstr >> sphere_center;
+        if (!sstr.good()) {
+            throw std::runtime_error(
+                    "--center expects a 3-dimensional coordinate "
+                    "as a string, e.g., \"[1, 2, 3]\"");
+        }
+    })
+    << "Specify sphere center. By default, \"[0, 0, 0]\".\n";
+
+    // --radius
+    opt_parser.on_option(nullptr, "--radius", 1, 
+    [&](char** argv) {
+        try {
+            sphere_radius = std::stod(argv[0]);
+            if (!(sphere_radius > 0)) {
+                throw std::exception();
+            }
+        }
+        catch (const std::exception&) {
+            throw std::runtime_error(
+                    "--radius expects 1 positive float");
+        }
+    })
+    << "Specify sphere radius. By default, 1.\n";
+
+    // End <sphere>
+    opt_parser.on_end(
+    [&]() {
+        int num_leaves = 
+            static_cast<int>(
+                lai * 
+                sphere_radius * 
+                sphere_radius / 
+                (radius * radius));
+
+        for (int k = 0; k < num_leaves; k++) {
+            LeafDisk leaf_disk;
+            Vec2<Float> pos = 
+            Vec2<Float>::uniform_disk_pdf_sample(generateCanonical2(pcg));
+            leaf_disk.pos = {
+                pos[0],
+                pos[1],
+                pr::sqrt(1 - pr::dot(pos, pos)) *
+                        (2 * generateCanonical(pcg) - 1)
+            };
+            leaf_disk.pos *= sphere_radius;
+            leaf_disk.pos += sphere_center;
             leaf_disk.normal = angle_distribution->sampleNormal(pcg);
             leaf_disk.radius = radius;
             if (is_glist) {
