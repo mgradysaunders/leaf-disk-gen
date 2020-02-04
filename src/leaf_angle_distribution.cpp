@@ -156,35 +156,19 @@ Float VerhoefBimodalLeafAngleDistribution::lidf(Float theta) const
 Vec3<Float> TrowbridgeReitzLeafAngleDistribution::sampleNormal(
             Pcg32& pcg) const
 {
-#if 0
-    Vec2<Float> u = generateCanonical2(pcg);
-    Vec2<Float> m = 
-        pr::sqrt(-1 - 1 / (4 * u * (u - 1))) * 
-        pr::copysign(Vec2<Float>{1, 1}, u - Float(0.5));
+    Float u0 = generateCanonical(pcg);
+    Float u1 = generateCanonical(pcg);
+    Float m = u0 / pr::sqrt(1 - u0 * u0);
+    Float phi = 2 * pr::numeric_constants<Float>::M_pi() * u1;
+    Float cos_phi = pr::cos(phi);
+    Float sin_phi = pr::sin(phi);
     return 
         pr::normalize_safe(
         Vec3<Float>{
-            -alphax_ * m[0], 
-            -alphay_ * m[1], 
+            -alphax_ * cos_phi * m,
+            -alphay_ * sin_phi * m,
             1
         });
-#else
-    Float u = generateCanonical(pcg);
-    Float m = 
-        pr::sqrt(-1 - 1 / (4 * u * (u - 1))) * 
-        pr::sign(u - Float(0.5));
-    Float phi = generateCanonical(pcg) *
-        2 * pr::numeric_constants<Float>::M_pi();
-    Float mx = pr::cos(phi) * m;
-    Float my = pr::sin(phi) * m;
-    return 
-        pr::normalize_safe(
-        Vec3<Float>{
-            -alphax_ * mx,
-            -alphay_ * my,
-            1
-        });
-#endif
 }
 
 // Sample normal.
