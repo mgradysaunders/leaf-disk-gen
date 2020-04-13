@@ -39,7 +39,7 @@ int main(int argc, char** argv)
 {
     using namespace ld;
 
-    pr::option_parser opt_parser(
+    pre::option_parser opt_parser(
         "desc [OPTIONS] [<box> [BOX-OPTIONS]|<sphere> [SPHERE-OPTIONS]]...");
 
     int seed = 0;
@@ -175,7 +175,7 @@ int main(int argc, char** argv)
     [&]() {
 
         // Does not have GList extension?
-        pr::ci_string ci_ofs_filename = ofs_filename.c_str();
+        pre::ci_string ci_ofs_filename = ofs_filename.c_str();
         if (ci_ofs_filename.rfind(".glist") + 6 != 
             ci_ofs_filename.size()) {
             is_glist = false;
@@ -257,16 +257,16 @@ int main(int argc, char** argv)
     // End <box>
     opt_parser.on_end(
     [&]() {
-        pr::aabb3<Float> box = {
-            pr::min(box_from, box_to),
-            pr::max(box_from, box_to)
+        pre::aabb3<Float> box = {
+            pre::min(box_from, box_to),
+            pre::max(box_from, box_to)
         };
         int num_leaves = 
             static_cast<int>(
                 lai * 
                 (box[1][0] - box[0][0]) *
                 (box[1][1] - box[0][1]) /
-                (pr::numeric_constants<Float>::M_pi() * radius * radius));
+                (pre::numeric_constants<Float>::M_pi() * radius * radius));
 
         for (int k = 0; k < num_leaves; k++) {
             LeafDisk leaf_disk;
@@ -338,8 +338,8 @@ int main(int argc, char** argv)
             leaf_disk.pos = {
                 pos[0],
                 pos[1],
-                pr::sqrt(1 - pr::dot(pos, pos)) *
-                        (2 * generateCanonical(pcg) - 1)
+                pre::sqrt(1 - pre::dot(pos, pos)) *
+                         (2 * generateCanonical(pcg) - 1)
             };
             leaf_disk.pos *= sphere_radius;
             leaf_disk.pos += sphere_center;

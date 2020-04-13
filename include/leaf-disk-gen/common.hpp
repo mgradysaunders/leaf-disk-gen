@@ -54,24 +54,24 @@ typedef double Float;
  * @brief 2-dimensional vector.
  */
 template <typename T>
-using Vec2 = pr::vec2<T>;
+using Vec2 = pre::vec2<T>;
 
 /**
  * @brief 3-dimensional vector.
  */
 template <typename T>
-using Vec3 = pr::vec3<T>;
+using Vec3 = pre::vec3<T>;
 
 /**
  * @brief 3-dimensional matrix.
  */
 template <typename T>
-using Mat3 = pr::mat3<T>;
+using Mat3 = pre::mat3<T>;
 
 /**
  * @brief Permuted congruential generator.
  */
-typedef pr::pcg32 Pcg32;
+typedef pre::pcg32 Pcg32;
 
 /**
  * @brief Generate canonical random sample.
@@ -79,7 +79,7 @@ typedef pr::pcg32 Pcg32;
 inline
 Float generateCanonical(Pcg32& pcg)
 {
-    return pr::generate_canonical<Float>(pcg);
+    return pre::generate_canonical<Float>(pcg);
 }
 
 /**
@@ -88,7 +88,7 @@ Float generateCanonical(Pcg32& pcg)
 inline 
 Vec2<Float> generateCanonical2(Pcg32& pcg)
 {
-    return pr::generate_canonical<Float, 2>(pcg);
+    return pre::generate_canonical<Float, 2>(pcg);
 }
 
 /**
@@ -97,7 +97,7 @@ Vec2<Float> generateCanonical2(Pcg32& pcg)
 inline 
 Vec3<Float> generateCanonical3(Pcg32& pcg)
 {
-    return pr::generate_canonical<Float, 3>(pcg);
+    return pre::generate_canonical<Float, 3>(pcg);
 }
 
 /**@}*/

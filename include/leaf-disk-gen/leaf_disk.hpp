@@ -75,7 +75,7 @@ public:
      */
     Float computeArea() const
     {
-        return pr::numeric_constants<Float>::M_pi() * (radius * radius);
+        return pre::numeric_constants<Float>::M_pi() * (radius * radius);
     }
 
     /**
@@ -83,7 +83,7 @@ public:
      */
     Float computeProjectedArea(const Vec3<Float>& dir) const
     {
-        return computeArea() * pr::abs(pr::dot(normal, dir));
+        return computeArea() * pre::abs(pre::dot(normal, dir));
     }
 
     /**@}*/

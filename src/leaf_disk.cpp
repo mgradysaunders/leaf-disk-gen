@@ -64,8 +64,8 @@ void LeafDisk::writeObj(
     Mat3<Float>::build_onb(normal);
 
     // Tangential directions.
-    Vec3<Float> hatu = pr::transpose(tbn)[0];
-    Vec3<Float> hatv = pr::transpose(tbn)[1];
+    Vec3<Float> hatu = pre::transpose(tbn)[0];
+    Vec3<Float> hatv = pre::transpose(tbn)[1];
 
     // Write center vertex.
     ostr << "v ";
@@ -78,15 +78,15 @@ void LeafDisk::writeObj(
         ver_res = 4;
     }
 
-    Float dphi = 2 * pr::numeric_constants<Float>::M_pi() / ver_res;
-    Float area_fac = pr::sqrt(dphi / pr::sin(dphi)); // Preserve area.
+    Float dphi = 2 * pre::numeric_constants<Float>::M_pi() / ver_res;
+    Float area_fac = pre::sqrt(dphi / pre::sin(dphi)); // Preserve area.
 
     // Write vertices.
     for (unsigned int j = 0; j < ver_res; j++) {
         Float phi = j * dphi;
         Vec3<Float> ver = 
-            (area_fac * radius * pr::cos(phi)) * hatu + 
-            (area_fac * radius * pr::sin(phi)) * hatv + pos;
+            (area_fac * radius * pre::cos(phi)) * hatu + 
+            (area_fac * radius * pre::sin(phi)) * hatv + pos;
         ostr << "v ";
         ostr << ver[0] << ' ';
         ostr << ver[1] << ' ';

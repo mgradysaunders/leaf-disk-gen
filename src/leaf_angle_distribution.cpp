@@ -45,7 +45,7 @@ void IsotropicLidfLeafAngleDistribution::lidfInit(int n)
     lidf_.resize(n);
     for (int k = 1; k < n - 1; k++) {
         lidf_[k] = lidf(k / Float(n - 1) * 
-                        pr::numeric_constants<Float>::M_pi_2());
+                        pre::numeric_constants<Float>::M_pi_2());
     }
     // Always 0 and 1.
     lidf_[0] = 0;
@@ -72,7 +72,7 @@ Vec3<Float> IsotropicLidfLeafAngleDistribution::sampleNormal(Pcg32& pcg) const
         if (itr == lidf_.begin() || 
             itr == lidf_.end()) {
             theta = itr == lidf_.begin() ? 0 : 
-                    pr::numeric_constants<Float>::M_pi_2();
+                    pre::numeric_constants<Float>::M_pi_2();
         }
         else {
             --itr;
@@ -85,16 +85,16 @@ Vec3<Float> IsotropicLidfLeafAngleDistribution::sampleNormal(Pcg32& pcg) const
             Float fac = (u0 - lidf0) / (lidf1 - lidf0);
             theta = ((1 - fac) * k0 + fac * k1) /
                     (lidf_.size() - 1) * 
-                    pr::numeric_constants<Float>::M_pi_2();
+                    pre::numeric_constants<Float>::M_pi_2();
         }
-        sin_theta = pr::sin(theta);
-        cos_theta = pr::cos(theta);
+        sin_theta = pre::sin(theta);
+        cos_theta = pre::cos(theta);
     }
 
     // Sample azimumth.
-    Float phi = 2 * pr::numeric_constants<Float>::M_pi() * u1;
-    Float cos_phi = pr::cos(phi);
-    Float sin_phi = pr::sin(phi);
+    Float phi = 2 * pre::numeric_constants<Float>::M_pi() * u1;
+    Float cos_phi = pre::cos(phi);
+    Float sin_phi = pre::sin(phi);
 
     // Construct direction.
     return {
@@ -110,23 +110,23 @@ Float TrigonometricLeafAngleDistribution::lidf(Float theta) const
     switch (type_) {
         default:
         case eTypePlanophile:
-            return (theta + pr::sin(2 * theta) / 2) / 
-                            pr::numeric_constants<Float>::M_pi_2();
+            return (theta + pre::sin(2 * theta) / 2) / 
+                            pre::numeric_constants<Float>::M_pi_2();
 
         case eTypeErectophile:
-            return (theta - pr::sin(2 * theta) / 2) /
-                            pr::numeric_constants<Float>::M_pi_2();
+            return (theta - pre::sin(2 * theta) / 2) /
+                            pre::numeric_constants<Float>::M_pi_2();
 
         case eTypePlagiophile:
-            return (theta - pr::sin(4 * theta) / 4) /
-                            pr::numeric_constants<Float>::M_pi_2();
+            return (theta - pre::sin(4 * theta) / 4) /
+                            pre::numeric_constants<Float>::M_pi_2();
 
         case eTypeExtremophile:
-            return (theta + pr::sin(4 * theta) / 4) / 
-                            pr::numeric_constants<Float>::M_pi_2();
+            return (theta + pre::sin(4 * theta) / 4) / 
+                            pre::numeric_constants<Float>::M_pi_2();
 
         case eTypeSpherical:
-            return 1 - pr::cos(theta);
+            return 1 - pre::cos(theta);
     }
 
     // Unreachable.
@@ -141,15 +141,15 @@ Float VerhoefBimodalLeafAngleDistribution::lidf(Float theta) const
     double x = double(2 * theta);
     double y = 0;
     while (1) {
-        y = a * pr::sin(x) + b * (pr::sin(2 * x) / 2);
+        y = a * pre::sin(x) + b * (pre::sin(2 * x) / 2);
         double dx = (y - x + 2 * theta) / 2;
-        if (pr::fabs(dx) < 1e-6) {
+        if (pre::fabs(dx) < 1e-6) {
             break;
         }
         x += dx;
     }
     return Float(y + theta) / 
-                pr::numeric_constants<Float>::M_pi_2();
+                pre::numeric_constants<Float>::M_pi_2();
 }
 
 // Sample normal.
@@ -158,12 +158,12 @@ Vec3<Float> TrowbridgeReitzLeafAngleDistribution::sampleNormal(
 {
     Float u0 = generateCanonical(pcg);
     Float u1 = generateCanonical(pcg);
-    Float m = u0 / pr::sqrt(1 - u0 * u0);
-    Float phi = 2 * pr::numeric_constants<Float>::M_pi() * u1;
-    Float cos_phi = pr::cos(phi);
-    Float sin_phi = pr::sin(phi);
+    Float m = u0 / pre::sqrt(1 - u0 * u0);
+    Float phi = 2 * pre::numeric_constants<Float>::M_pi() * u1;
+    Float cos_phi = pre::cos(phi);
+    Float sin_phi = pre::sin(phi);
     return 
-        pr::normalize_safe(
+        pre::normalize_safe(
         Vec3<Float>{
             -alphax_ * cos_phi * m,
             -alphay_ * sin_phi * m,
@@ -176,11 +176,11 @@ Vec3<Float> BeckmannLeafAngleDistribution::sampleNormal(
             Pcg32& pcg) const
 {
     Vec2<Float> m = {
-        pr::normal_distribution<Float>(0, 1)(pcg),
-        pr::normal_distribution<Float>(0, 1)(pcg)
+        pre::normal_distribution<Float>(0, 1)(pcg),
+        pre::normal_distribution<Float>(0, 1)(pcg)
     };
     return 
-        pr::normalize_safe(
+        pre::normalize_safe(
         Vec3<Float>{
             -alphax_ * m[0], 
             -alphay_ * m[1], 
@@ -196,7 +196,7 @@ LeafAngleDistribution::fromString(const std::string& args)
     std::string name;
     ss >> name;
 
-    pr::ci_string ci_name = name.c_str();
+    pre::ci_string ci_name = name.c_str();
     if (ci_name == "Uniform") {
         return new UniformLeafAngleDistribution();
     }
@@ -205,7 +205,7 @@ LeafAngleDistribution::fromString(const std::string& args)
         std::string type;
         ss >> type;
 
-        pr::ci_string ci_type = type.c_str();
+        pre::ci_string ci_type = type.c_str();
         if (ci_type == "Planophile") {
             return new TrigonometricLeafAngleDistribution(
                        TrigonometricLeafAngleDistribution::eTypePlanophile);
@@ -252,7 +252,7 @@ LeafAngleDistribution::fromString(const std::string& args)
             ss >> sb;
             a = std::stod(sa);
             b = std::stod(sb);
-            if (!(pr::fabs(a) + pr::fabs(b) <= 1)) {
+            if (!(pre::fabs(a) + pre::fabs(b) <= 1)) {
                 throw std::exception();
             }
         }
