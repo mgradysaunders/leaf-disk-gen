@@ -1,4 +1,5 @@
 <map id="ld::TrigonometricLeafAngleDistribution" name="ld::TrigonometricLeafAngleDistribution">
-<area shape="rect" id="node2" href="$classld_1_1IsotropicLidfLeafAngleDistribution.html" title="Isotropic LIDF leaf angle distribution. " alt="" coords="9,80,179,121"/>
-<area shape="rect" id="node3" href="$classld_1_1LeafAngleDistribution.html" title="Leaf angle distribution. " alt="" coords="12,5,176,32"/>
+<area shape="rect" id="node1" title="Trigonometric leaf angle distribution." alt="" coords="5,169,203,211"/>
+<area shape="rect" id="node2" href="$classld_1_1IsotropicLidfLeafAngleDistribution.html" title="Isotropic LIDF leaf angle distribution." alt="" coords="11,80,197,121"/>
+<area shape="rect" id="node3" href="$classld_1_1LeafAngleDistribution.html" title="Leaf angle distribution." alt="" coords="13,5,195,32"/>
 </map>

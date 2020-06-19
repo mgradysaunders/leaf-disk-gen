@@ -1,5 +1,6 @@
 <map id="ld::IsotropicLidfLeafAngleDistribution" name="ld::IsotropicLidfLeafAngleDistribution">
-<area shape="rect" id="node3" href="$classld_1_1TrigonometricLeafAngleDistribution.html" title="Trigonometric leaf angle distribution. " alt="" coords="5,169,183,211"/>
-<area shape="rect" id="node4" href="$classld_1_1VerhoefBimodalLeafAngleDistribution.html" title="Verhoef bimodal leaf angle distribution. " alt="" coords="207,169,397,211"/>
-<area shape="rect" id="node2" href="$classld_1_1LeafAngleDistribution.html" title="Leaf angle distribution. " alt="" coords="116,5,280,32"/>
+<area shape="rect" id="node1" title="Isotropic LIDF leaf angle distribution." alt="" coords="125,80,312,121"/>
+<area shape="rect" id="node3" href="$classld_1_1TrigonometricLeafAngleDistribution.html" title="Trigonometric leaf angle distribution." alt="" coords="5,169,203,211"/>
+<area shape="rect" id="node4" href="$classld_1_1VerhoefBimodalLeafAngleDistribution.html" title="Verhoef bimodal leaf angle distribution." alt="" coords="227,169,439,211"/>
+<area shape="rect" id="node2" href="$classld_1_1LeafAngleDistribution.html" title="Leaf angle distribution." alt="" coords="127,5,310,32"/>
 </map>
